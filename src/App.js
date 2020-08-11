@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Bar } from '@nivo/bar'
-import { Octokit } from '@octokit/rest'
 import useDimensions from 'react-use-dimensions'
 import useInterval from './hooks/useInterval'
 import { useWindowSize } from './hooks/useWindowSize'
@@ -8,10 +7,6 @@ import { useWindowSize } from './hooks/useWindowSize'
 function take(n, arr) {
   return arr.slice(0, n)
 }
-
-const octokit = new Octokit({
-  auth: process.env.REACT_APP_GITHUB_KEY,
-})
 
 const BarComponent = (props) => {
   const [ref, { width }] = useDimensions()
@@ -69,12 +64,9 @@ const Race = () => {
   const [data, setData] = useState([])
 
   useInterval(() => {
-    octokit.repos
-      .listForOrg({
-        org: 'klarna-incubator',
-        type: 'public',
-      })
-      .then(({ data }) => {
+    fetch('https://api.github.com/orgs/klarna-incubator/repos')
+      .then((r) => r.json())
+      .then((data) => {
         setData(data)
       })
   }, 60000)

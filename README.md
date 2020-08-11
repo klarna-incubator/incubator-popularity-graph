@@ -9,13 +9,11 @@ A simple "race" graph showing Klarna incubator projects.
 
 ## Setup
 
-Get a developer key from github. The only permission needed is to read public info on repos. So create one _only_ with this permission.
-
 ```sh
 git clone https://github.com/klarna-incubator/incubator-popularity-graph.git
 cd incubator-popularity-graph
 yarn
-REACT_APP_GITHUB_KEY={your key here} yarn start
+yarn start
 ```
 
 ## How to contribute

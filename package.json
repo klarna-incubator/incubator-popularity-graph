@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@nivo/bar": "^0.62.0",
-    "@octokit/rest": "^18.0.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
