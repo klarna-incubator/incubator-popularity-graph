@@ -1,9 +1,12 @@
 {
   "name": "incubator-popularity-graph",
   "version": "0.1.0",
-  "private": true,
+  "private": true,  
+  "license": "Apache-2.0",
+  "homepage": "https://klarna-incubator.github.io/incubator-popularity-graph/",
   "dependencies": {
     "@nivo/bar": "^0.62.0",
+    "gh-pages": "^3.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
@@ -13,7 +16,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
