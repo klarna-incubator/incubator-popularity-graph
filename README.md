@@ -1,46 +1,21 @@
-# Project Name
-> Short blurb about what your project does.
+# Incubator popularity graph
+> Growth in a graph
 
 [![Build Status][ci-image]][ci-url]
 [![License][license-image]][license-url]
 [![Developed at Klarna][klarna-image]][klarna-url]
 
+A simple "race" graph showing Klarna incubator projects.
 
-One to two paragraph statement about your project and what it does.
+## Setup
 
-## First steps
-
-<details>
- <summary>Installation (for Admins)</summary>
-  
-  Currently, new repositories can be created only by a Klarna Open Source community lead. Please reach out to us if you need assistance.
-  
-  1. Create a new repository by clicking ‘Use this template’ button.
-  
-  2. Make sure your newly created repository is private.
-  
-  3. Enable Dependabot alerts in your candidate repo settings under Security & analysis. You need to enable ‘Allow GitHub to perform read-only analysis of this repository’ first.
-</details>
-
-1. Update `README.md` and `CHANGELOG.md`.
-
-2. Optionally, change `.github/CONTRIBUTING.md`.
-
-3. Do *not* edit `LICENSE`, `.github/CODE_OF_CONDUCT.md`, and `.github/SECURITY.md`.
-
-## Usage example
-
-A few motivating and useful examples of how your project can be used. Spice this up with code blocks and potentially more screenshots.
-
-_For more examples and usage, please refer to the [Docs](TODO)._
-
-## Development setup
-
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
+Get a developer key from github. The only permission needed is to read public info on repos. So create one _only_ with this permission.
 
 ```sh
-make install
-npm test
+git clone https://github.com/klarna-incubator/incubator-popularity-graph.git
+cd incubator-popularity-graph
+yarn
+REACT_APP_GITHUB_KEY={your key here} yarn start
 ```
 
 ## How to contribute
@@ -56,7 +31,6 @@ See our [changelog](CHANGELOG.md).
 Copyright © 2020 Klarna Bank AB
 
 For license details, see the [LICENSE](LICENSE) file in the root of this project.
-
 
 <!-- Markdown link & img dfn's -->
 [ci-image]: https://img.shields.io/badge/build-passing-brightgreen?style=flat-square
