@@ -1,123 +1,170 @@
 import React, { useState } from 'react'
-import { Bar } from '@nivo/bar'
-import useDimensions from 'react-use-dimensions'
-import useInterval from './hooks/useInterval'
+import Race from './Race'
 import { useWindowSize } from './hooks/useWindowSize'
+import useInterval from './hooks/useInterval'
+import {
+  GitMergeIcon,
+  StarIcon,
+  PlusIcon,
+  RocketIcon,
+  GitCommitIcon,
+} from '@primer/octicons-react'
 
-function take(n, arr) {
-  return arr.slice(0, n)
-}
-
-const BarComponent = (props) => {
-  const [ref, { width }] = useDimensions()
-
-  const isTextBig = width > props.width - 20
-  const x = isTextBig ? 10 : props.width - 16
-
+function BaseEvent({ event, children, Icon }) {
   return (
-    <g transform={`translate(${props.x},${props.y})`}>
-      <rect
-        x={-3}
-        y={7}
-        width={props.width}
-        height={props.height}
-        fill="rgba(0, 0, 0, .07)"
-      />
-      <rect width={props.width} height={props.height} fill={props.color} />
-      <rect
-        x={props.width - 8}
-        width={8}
-        height={props.height}
-        fill={`rgba(0,0,0,0.2)`}
-      />
-      <text
-        x={x}
-        y={props.height / 4.5}
-        textAnchor={isTextBig ? 'start' : 'end'}
-        dominantBaseline="central"
-        fill={'rgba(0,0,0,0.75)'}
+    <>
+      <div
         style={{
-          fontSize: props.height / 3,
-        }}
-        ref={ref}
-      >
-        {props.data.indexValue}
-      </text>
-      <text
-        x={x}
-        y={props.height / 1.5}
-        textAnchor={isTextBig ? 'start' : 'end'}
-        dominantBaseline="central"
-        fill={'black'}
-        style={{
-          fontSize: props.height / 2.1,
+          fontSize: 10,
+          color: '#667',
+          float: 'right',
+          lineHeight: 1,
         }}
       >
-        {props.data.value}
-      </text>
-    </g>
+        {event.actor.login}
+
+        <img
+          src={event.actor.avatar_url}
+          style={{
+            width: 16,
+            borderRadius: 4,
+            verticalAlign: 'middle',
+            marginLeft: 5,
+          }}
+        />
+      </div>
+      <div style={{ fontSize: 10, color: '#667', paddingBottom: 5 }}>
+        {event.created_at}
+      </div>
+
+      <div>
+        <Icon /> {event.repo.name.replace('klarna-incubator/', '')}
+      </div>
+
+      {children}
+    </>
   )
 }
 
-const Race = () => {
-  const size = useWindowSize()
+function WatchEvent({ event }) {
+  return <BaseEvent event={event} Icon={StarIcon} />
+}
+
+function PushEvent({ event }) {
+  return (
+    <BaseEvent event={event} Icon={GitMergeIcon}>
+      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+        {event.payload.commits.map((commit) => {
+          return (
+            <li
+              style={{
+                marginLeft: 20,
+                fontSize: 10,
+                padding: 10,
+              }}
+            >
+              <GitCommitIcon style={{ verticalAlign: 'middle', width: 12 }} />
+              <b> {commit.author.name} </b>
+              <i>{commit.message}</i>
+            </li>
+          )
+        })}
+      </ul>
+    </BaseEvent>
+  )
+}
+
+function CreateEvent({ event }) {
+  return (
+    <>
+      <div style={{ fontSize: 10, color: '#667', paddingBottom: 5 }}>
+        {event.created_at}
+      </div>
+      <div>
+        <RocketIcon /> {event.repo.name.replace('klarna-incubator/', '')} is now
+        public!
+      </div>
+    </>
+  )
+}
+
+function PublicEvent({ event }) {
+  return (
+    <>
+      <div style={{ fontSize: 10, color: '#667', paddingBottom: 5 }}>
+        {event.created_at}
+      </div>
+      <div>
+        <RocketIcon /> {event.repo.name.replace('klarna-incubator/', '')} is now
+        public!
+      </div>
+    </>
+  )
+}
+
+const eventComponents = {
+  WatchEvent: WatchEvent,
+  PushEvent: PushEvent,
+  CreateEvent: CreateEvent,
+  PublicEvent: PublicEvent,
+}
+
+function Commits() {
   const [data, setData] = useState([])
 
   useInterval(() => {
-    fetch('https://api.github.com/orgs/klarna-incubator/repos')
+    fetch('https://api.github.com/orgs/klarna-incubator/events')
       .then((r) => r.json())
       .then((data) => {
         setData(data)
       })
   }, 60000)
 
-  const state = data.map((repo) => {
-    return {
-      id: repo.name,
-      value: repo.stargazers_count,
-    }
-  })
-
-  const barData = take(
-    18,
-    [...state].sort((a, b) => a.value - b.value).reverse()
-  ).reverse()
-
   return (
-    <div style={{ fontFamily: 'Menlo, Consolas, monospace' }}>
-      <h1 style={{ marginLeft: 60, fontWeight: 400, color: '#334' }}>
-        Repos popularity
-      </h1>
+    <div>
+      <h1 style={{ fontWeight: 400, color: '#334' }}>Activity</h1>
 
-      <Bar
-        width={size.width}
-        height={size.height - 130}
-        layout="horizontal"
-        margin={{ top: 26, right: 120, bottom: 26, left: 60 }}
-        data={barData}
-        indexBy="id"
-        keys={['value']}
-        colors={{ scheme: 'spectral' }}
-        colorBy="indexValue"
-        borderColor={{ from: 'color', modifiers: [['darker', 2.6]] }}
-        enableGridX
-        enableGridY={false}
-        axisTop={{
-          format: '~s',
-        }}
-        axisBottom={{
-          format: '~s',
-        }}
-        axisLeft={null}
-        padding={0.3}
-        labelTextColor={{ from: 'color', modifiers: [['darker', 1.4]] }}
-        isInteractive={false}
-        barComponent={BarComponent}
-        motionStiffness={170}
-        motionDamping={26}
-      />
+      {data.map((event) => {
+        if (
+          event.type === 'CreateEvent' &&
+          event.payload.ref_type !== 'repository'
+        ) {
+          return null
+        }
+
+        const Event = eventComponents[event.type] || BaseEvent
+
+        return (
+          <div
+            style={{
+              padding: 10,
+              border: '1px solid #eeeef3',
+              marginBottom: 10,
+            }}
+          >
+            <Event event={event} />
+          </div>
+        )
+      })}
     </div>
   )
 }
 
-export default Race
+export default () => {
+  // const { height } = useWindowSize()
+  // return <Race />
+
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '2fr 1fr',
+        height: '100%',
+        fontFamily: 'Menlo, Consolas, monospace',
+      }}
+    >
+      <Race />
+      <Commits />
+    </div>
+  )
+}
