@@ -65,6 +65,8 @@ const Race = () => {
   const [data, setData] = useState([])
 
   useInterval(() => {
+    if (data.message) return
+
     fetch('https://api.github.com/orgs/klarna-incubator/repos')
       .then((r) => r.json())
       .then((data) => {
@@ -72,7 +74,9 @@ const Race = () => {
       })
   }, 60000)
 
+  if (data.message) return data.message
   console.log({ data })
+
   const state = data.map((repo) => {
     return {
       id: repo.name,
