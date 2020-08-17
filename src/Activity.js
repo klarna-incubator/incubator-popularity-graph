@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import useInterval from './hooks/useInterval'
+import React, { useState, useEffect } from 'react'
+// import useInterval from './hooks/useInterval'
 
 import {
   GitMergeIcon,
@@ -20,8 +20,7 @@ const eventComponents = {
 export default function Activity() {
   const [data, setData] = useState([])
 
-  useInterval(() => {
-    if (data.message) return
+  useEffect(() => {
     fetch(
       `https://api.github.com/orgs/klarna-incubator/events?time=${new Date()}`
     )
@@ -29,7 +28,7 @@ export default function Activity() {
       .then((data) => {
         setData(data)
       })
-  }, 10000)
+  }, [])
 
   if (data.message) return data.message
 

@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Bar } from '@nivo/bar'
 import useDimensions from 'react-use-dimensions'
-import useInterval from './hooks/useInterval'
 import { useWindowSize } from './hooks/useWindowSize'
 
 function take(n, arr) {
@@ -64,15 +63,13 @@ const Race = () => {
   const [ref, size] = useDimensions()
   const [data, setData] = useState([])
 
-  useInterval(() => {
-    if (data.message) return
-
+  useEffect(() => {
     fetch('https://api.github.com/orgs/klarna-incubator/repos')
       .then((r) => r.json())
       .then((data) => {
         setData(data)
       })
-  }, 60000)
+  }, [])
 
   if (data.message) return data.message
   console.log({ data })
